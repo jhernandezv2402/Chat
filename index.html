@@ -1,68 +1,28 @@
 <!doctype html>
 <html>
   <head>
-    <title>Chad</title>
+    <title>Chad (Beta)</title>
     <link rel="stylesheet" href="/sources/style.css">
   </head>
   <body>
-    <section>
+    <section id="main">
       <ul id="messages">
         <p>Welcome to Git (version 1.1.1-preview)</p>
         <p>&nbsp;</p>
         <p>&nbsp;</p>
         <p>Run 'git help git' to display the help index.</p>
-        <p>Run 'git help '&#60;command&#62;' to display help for especific commands.</p>
+        <p>Run 'git help '&#60;command&#62;' to display help for especific commands. <span class="users-num"></span></p>
 
       <form action="">
         <span class="prompt-green">Global@TB65</span> <span class="prompt-yellow">/c/xampp/</span> <input autofocus id="m" autocomplete="off" /><!-- <button>Send</button> -->
       </form>
       </ul>
       <audio src="/sources/blop.mp3" id="blop"></audio>
+      <audio src="/sources/ahuuuh.mp3" id="ahu"></audio>
     </section>
 
   </body>
   <script src="/socket.io/socket.io.js"></script>
   <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
-  <script>
-    var socket = io();
-    $('form').submit(function(){
-      var texto = $('#m').val();
-      if(texto == 'clear'){
-        $('#messages li').remove();
-        $('#m').val('');
-        return false;
-      }else if(texto == '' || texto == undefined || texto == null){
-        return false;
-      }
-      socket.emit('chat message', $('#m').val());
-      $('#m').val('');
-      return false;
-    });
-    socket.on('chat message', function (msg) {
-      var contenedor = $('#messages');
-      var user;
-      // user = /172.19.0.150/.test(msg.user) ? 'Yisus' : 'Global' ;
-      if(/172.19.0.150/.test(msg.user)) {
-        user = 'Yisus';
-      }else if(/172.19.0.15/.test(msg.user)) {
-        user = 'Abelinho';
-      }else if(/172.19.0.194/.test(msg.user)) {
-        user = 'Joshua';
-      }else if(/172.19.0.42/.test(msg.user)) {
-        user = 'Pily';
-      }else if(/172.19.0.98/.test(msg.user)) {
-        user = 'Vri-Viri';
-      }else if(/172.19.0.23/.test(msg.user)) {
-        user = 'Dilbert-Jr.';
-      }else {
-        user = 'Master';
-      }
-      var prompt_sfx = '<span class="prompt-green">'+user+'@TB65</span> <span class="prompt-yellow">/c/xampp/</span> ';
-      var li = $('<li>').html(prompt_sfx + msg.mensaje);
-      li.insertBefore('form');
-      contenedor.scrollTop(contenedor.prop("scrollHeight"));
-      document.getElementById('blop').play();
-      console.log(msg)
-    });
-  </script>
+  <script src="/sources/chat.js"></script>
 </html>

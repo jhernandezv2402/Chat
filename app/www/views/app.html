@@ -1,0 +1,57 @@
+<!doctype html>
+<html ng-app="chatApp">
+	<head>
+		<title>Chad (Beta)</title>
+		<!-- <link rel="stylesheet" href="/css/terminal.theme.css"> -->
+		<link rel="stylesheet" href="/css/chat.theme.css">
+	</head>
+	<body ng-controller="chatController" ng-init="init()">
+		<section id="main"  ng-click="focus()">
+			<div id="panel">
+				<h2>Logged as: <b>{{ currentUser }}</b></h2>
+				<h3>Users connected ({{ numUsr }}):</h3>
+				<ul>
+					<li class="user-item" ng-repeat="(k, v) in users | orderBy : v " >{{ v }}</li>
+				</ul>
+			</div>
+			<ul id="messages">
+				<p>Welcome to Git (version 1.1.1-preview)</p>
+				<p>&nbsp;</p>
+				<p>&nbsp;</p>
+				<p>Run 'git help git' to display the help index.</p>
+				<p>Run 'git help '&#60;command&#62;' to display help for especific commands. <span class="users-num">{{ numUsr }}</span></p>
+
+				<li ng-repeat="m in messages track by $index" ng-if="logged">
+					<span ng-if="!m.left && !m.join">
+						<span class="prompt-green" >{{m.user}}</span> <span class="prompt-green" >@TB65</span> <span class="prompt-yellow">/c/xampp/ </span><span class="msg-line" ng-bind-html="m.mensaje | characters:250"></span>
+					</span>
+
+					<span ng-class="{'prompt-left' : m.left}" ng-if="m.left">
+						<span class="skull">&#9760;</span> {{ m.user }} MURIÓ <span class="skull">&#9760;</span>
+					</span>
+					<span ng-class="{'prompt-join' : m.join}" ng-if="m.join">--== {{ m.user }} SE UNIÓ ==-</span>
+				</li>
+
+				<form ng-submit="im(form.msg)" ng-if="logged">
+					<span class="prompt-green">Global@TB65</span> <span class="prompt-yellow">/c/xampp/</span> <input ng-model="form.msg" autofocus id="m" autocomplete="off" /><button>Send</button>
+				</form>
+				<span class="error" ng-if="noLogged">{{ noLogged }}</span>
+			</ul>
+			<audio src="/sounds/blop.mp3" id="blop"></audio>
+			<audio src="/sounds/ahuuuh.mp3" id="ahu"></audio>
+
+		</section>
+		<article class="overlay" ng-if="!logged">
+			<form ng-submit="login(loginForm.user, room)" name="loginForm">
+				<input required ng-model="loginForm.user" type="text" placeholder="Ingresa un Nickname" />
+				<input type="submit" value="Entrar" ng-disabled="loginForm.$invalid" />
+			</form>
+		</article>
+
+	</body>
+	<script src="/bower_components/angular/angular.js"></script>
+	<script src="/bower_components/angular-sanitize/angular-sanitize.js"></script>
+	<script src="/bower_components/angular-truncate/src/truncate.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="/js/_chat.js"></script>
+</html>

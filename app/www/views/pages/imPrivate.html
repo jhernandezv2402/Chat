@@ -1,0 +1,28 @@
+<section id="main" ng-init="init()" ng-click="focus()">
+	<p>{{ _id }}</p>
+	<ul id="messages">
+		<p>Welcome to Git (version 1.1.1-preview)</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>Run 'git help git' to display the help index.</p>
+		<p>Run 'git help '&#60;command&#62;' to display help for especific commands. <span class="users-num">{{ numUsr }}</span></p>
+
+		<li ng-repeat="m in messages track by $index" >
+			<span ng-if="!m.left && !m.join">
+				<span class="prompt-green" >{{m.user}} @TB65</span> <span class="prompt-yellow">/c/xampp/ </span><span class="msg-line" ng-bind-html="m.mensaje | characters:250"></span>
+			</span>
+
+			<span ng-class="{'prompt-left' : m.left}" ng-if="m.left">
+				<span class="skull">&#9760;</span> {{ m.user }} MURIÓ <span class="skull">&#9760;</span>
+			</span>
+			<span ng-class="{'prompt-join' : m.join}" ng-if="m.join">--== {{ m.user }} SE UNIÓ ==-</span>
+		</li>
+
+		<form ng-submit="im(form.msg)">
+			<span class="prompt-green">Global@TB65</span> <span class="prompt-yellow">/c/xampp/</span> <input ng-model="form.msg" autofocus id="m" autocomplete="off" /><!-- <button>Send</button> -->
+		</form>
+		<span class="error" ng-if="noLogged">{{ noLogged }}</span>
+	</ul>
+	<audio src="/sounds/blop.mp3" id="blop"></audio>
+	<audio src="/sounds/ahuuuh.mp3" id="ahu"></audio>
+</section>

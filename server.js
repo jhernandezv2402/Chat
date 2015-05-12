@@ -1,31 +1,19 @@
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
-var io = require('socket.io')(http);
-var router = express.Router();
+var realtime = require('./server/realtime');
+var routes = require('./server/routes')(express);
+var port = process.env.PORT || 1850;
 
-app.use('/sources',express.static(__dirname + '/sources'));
-app.use('/chat', router);
+app.use(express.static(__dirname + '/app/www'));
+app.use('/bower_components', express.static(__dirname + '/bower_components'));
 
-router.route('/')
-	.get(function (req, res) {
-  		res.sendFile(__dirname+'/index.html');
-	});
+app.use('/chat', routes);
 
-io.on('connection', function (socket) {
-	var socketId = socket.id;
-    var clientIp = socket.request.connection.remoteAddress;
-	var client_ip_address = socket.request.connection.remoteAddress;
-  console.log('a user connected->> ' + socketId + "===:===" + client_ip_address);
-   socket.on('disconnect', function () {
-    console.log('user disconnected');
-  });
-  socket.on('chat message', function (msg) {
-    console.log('message: ' + msg + ' from: ' + client_ip_address);
-    io.emit('chat message', {mensaje : msg, user : client_ip_address});
-  });
-});
+// Socket.io
+realtime(http);
 
-http.listen(1850, function () {
-  console.log('listening on *:1850');
+
+http.listen(port, function () {
+	console.log('listening on *:', port);
 });
