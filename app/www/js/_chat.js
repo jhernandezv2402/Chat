@@ -35,6 +35,7 @@ angular.module('chatApp', ['ngSanitize', 'truncate'])
 				$scope.logged = true;
 				$scope.users = data.usersNames;
 				$scope.numUsr = data.numUsers;
+				$scope.messages = data.messages;
 				console.log(data)
 				$window.sessionStorage.setItem('room', data.room);
 			},10);
