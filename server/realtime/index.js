@@ -29,9 +29,7 @@ module.exports = function (server, mensaje) {
 			mensaje.find({})
 				.limit(80)
 				.exec(function (err, mensajes){
-					if (!err) {
-
-						// console.log(mensajes)
+					if (!err) {						
 						socket.emit('login', {
 							numUsers   : numUsers,
 							usersNames : usernames,
@@ -62,9 +60,9 @@ module.exports = function (server, mensaje) {
 				room: socket.room,
 				date: new Date()
 			}
-
+			
 			msj = new mensaje(data)
-
+				
 			msj.save(function (err, mensaje){
 				if (!err) {
 					io.in(socket.room).emit('chat message', {
@@ -75,6 +73,7 @@ module.exports = function (server, mensaje) {
 						date    : data.date
 					});
 				};
+
 			})
 
 		});
