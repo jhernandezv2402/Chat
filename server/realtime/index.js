@@ -1,5 +1,5 @@
 var socketio = require('socket.io');
-	
+
 
 module.exports = function (server, mensaje) {
 	var io = socketio(server);
@@ -17,31 +17,37 @@ module.exports = function (server, mensaje) {
 
 		socket.on('add user', function (user) {
 			socket.username = user.user;
+			socket.userAvatar = user.avatar;
 			socket.room = user.room;
-			usernames[user.user] = user.user;
-			++numUsers;
+			usernames[user.user] = user.avatar;
+			numUsers = Object.keys(usernames).length;
+			// ++numUsers;
 			addedUser = true;
 			console.log('Usuario logged: ' + user.user + ' --- Con IP: ' + client_ip_address + ' in room: ' + socket.room);
 
 			socket.join(socket.room);
 			mensaje.find({})
-			.exec(function (err, mensajes){
-				if (!err) {
+				.limit(80)
+				.exec(function (err, mensajes){
+					if (!err) {
 
-					console.log(mensajes)
-					socket.emit('login', {
-						numUsers : numUsers,
-						usersNames : usernames,
-						room : socket.room,
-						messages: mensajes
-					});
+						// console.log(mensajes)
+						socket.emit('login', {
+							numUsers   : numUsers,
+							usersNames : usernames,
+							user_ip    : client_ip_address,
+							room       : socket.room,
+							messages   : mensajes
+						});
 
-				};
-			})
-			
+					};
+				})
+
 			socket.broadcast.to(socket.room).emit('user joined', {
 				user : socket.username,
+				avatar : socket.userAvatar,
 				numUsers : numUsers,
+				user_ip  : client_ip_address,
 				usersNames : usernames,
 				join : true
 			});
@@ -64,7 +70,9 @@ module.exports = function (server, mensaje) {
 					io.in(socket.room).emit('chat message', {
 						mensaje : msg,
 						user    : socket.username,
-						user_ip : client_ip_address
+						avatar  : socket.userAvatar,
+						user_ip : client_ip_address,
+						date    : data.date
 					});
 				};
 			})
@@ -72,9 +80,11 @@ module.exports = function (server, mensaje) {
 		});
 
 		socket.on('disconnect', function () {
-			if(addedUser) {
-				--numUsers;
-				delete usernames[socket.username]
+			if(!usernames[socket.username]) console.log('user anonymous disconnected');
+			if(addedUser && usernames[socket.username]) {
+				// --numUsers;
+				delete usernames[socket.username];
+				numUsers = Object.keys(usernames).length;
 				console.log('user disconnected');
 
 				socket.broadcast.emit('user left', {

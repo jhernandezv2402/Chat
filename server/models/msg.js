@@ -1,5 +1,5 @@
 var msgModel = function () {
-	
+
 	var mongoose = require('mongoose')
 	var db_users= mongoose.createConnection('mongodb://localhost:27017/chad')
 
@@ -7,7 +7,7 @@ var msgModel = function () {
 		user: String,
 		mensaje: String,
 		room: String,
-		date: String				
+		date: String
 	})
 
 	return db_users.model('msg_model', Schema)
