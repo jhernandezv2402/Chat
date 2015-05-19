@@ -1,7 +1,7 @@
 var usersModel = function () {
 	
 	var mongoose = require('mongoose')
-	var db_users= mongoose.createConnection('mongodb://localhost:27017/ametro')
+	var db_users= mongoose.createConnection('mongodb://chad:global321@ds029317.mongolab.com:29317/chad')
 
 	var Schema = mongoose.Schema({
 		nombre: String,
