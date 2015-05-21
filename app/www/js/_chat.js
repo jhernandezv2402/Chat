@@ -28,8 +28,8 @@ angular.module('chatApp', ['ngSanitize', 'truncate', 'angularMoment', 'ngAnimate
 		$scope.room          = 'general';
 		var socket           = io();
 
-		// $scope.$watch(function () {
-		// 	console.log($scope.imageFileName);
+		// $scope.$watch('sound', function () {
+		// 	console.log($scope.sound);
 		// })
 		$scope.init = function () {
 			if($window.sessionStorage.user){
@@ -62,9 +62,10 @@ angular.module('chatApp', ['ngSanitize', 'truncate', 'angularMoment', 'ngAnimate
 				$scope.users = data.usersNames;
 				$scope.numUsr = data.numUsers;
 				$scope.messages = data.messages;
+				$scope.dataCurrentLogin = new Date();
 				console.log(data)
 				$window.sessionStorage.setItem('room', data.room);
-				$timeout(function(){$scope.scrollD();},10);
+				$timeout(function(){$scope.scrollD();},1000);
 			},10);
 		});
 
@@ -79,9 +80,10 @@ angular.module('chatApp', ['ngSanitize', 'truncate', 'angularMoment', 'ngAnimate
 				$scope.users = data.usersNames;
 				$scope.numUsr = data.numUsers;
 				data.date = new Date;
+				console.log(data);
 				$scope.messages.push(data);
 				if($scope.sound) document.getElementById('ahu').play();
-				$timeout(function(){$scope.scrollD();},10);
+				$timeout(function(){$scope.scrollD();},100);
 			},10);
 		});
 
@@ -90,22 +92,60 @@ angular.module('chatApp', ['ngSanitize', 'truncate', 'angularMoment', 'ngAnimate
 			campo.focus();
 		}
 
+		$scope.checkMessage = function (msg) {
+			if(msg == 'clear') {
+				$scope.messages = [];
+				$scope.form.msg = '';
+				return false;
+			}else if (msg== '') {
+				return false;
+			}else if(/[\"|\']*\<[\\|\/]*([a-zA-Z0-9\s\=\"\'\:\\\/\.\,]*)*\>(.*)/gm.test(msg)){
+				msg = '';
+			}else if(/(ht|f)tps?:\/\/\w+([\.\-\w]+)/.test(msg)){
+				var cadena = msg.split(" "),
+					re = /^((ht|f)tps?:)?\/\/\w+([\.\-\w\:]+)([\/\w\.-]*)*((\/)?(\?|\#\!|\#|\+|\.|\@|\$|\%)?([a-z\d\w\-]*\=)*([a-zA-A\d\w\-]*[\&]?[a-zA-A\d\w\-]*))*/,
+					mensaje = '',
+					thumbs = '',
+					vid = '',
+					youtubeID = '',
+					rgexYT = [
+						/watch\?v\=([A-Za-z0-9_-]+)/,
+						/youtu\.be\/([A-Za-z0-9_-]+)/,
+						/youtube\.com\/vi\/([A-Za-z0-9_-]+)/
+					];
+				for (var i = 0; i < cadena.length; i++) {
+					if(re.test(cadena[i])){
+						if(rgexYT[0].test(cadena[i])){
+							vid = rgexYT[0].exec(cadena[i]).pop();
+							youtubeID = vid.substring(0,11);
+							thumbs += '<p><a href="'+cadena[i]+'" target="_blank"><img src="http://img.youtube.com/vi/'+youtubeID+'/0.jpg" class="vid-th"/></a></p>';
+						}else if(rgexYT[1].test(cadena[i])){
+							vid = rgexYT[1].exec(cadena[i]).pop();
+							youtubeID = vid.substring(0,11);
+							thumbs += '<p><a href="'+cadena[i]+'" target="_blank"><img src="http://img.youtube.com/vi/'+youtubeID+'/0.jpg" class="vid-th"/></a></p>';
+						}else if(rgexYT[2].test(cadena[i])){
+							vid = rgexYT[2].exec(cadena[i]).pop();
+							youtubeID = vid.substring(0,11);
+							thumbs += '<p><a href="'+cadena[i]+'" target="_blank"><img src="http://img.youtube.com/vi/'+youtubeID+'/0.jpg" class="vid-th"/></a></p>';
+						}
+						mensaje += '<a href="'+cadena[i]+'" target="_blank">'+cadena[i]+'</a> ';
+					}else{
+						mensaje += cadena[i]+' ';
+					}
+				};
+				msg = thumbs + mensaje;
+			}
+
+			return msg;
+		}
+
 		$scope.im = function (message) {
 			if (!$scope.logged) {
 				$scope.noLogged = 'No puedes enviar mensajes hasta que inicies sesión.';
 				return false;
 			};
-			if(message == 'clear') {
-				$scope.messages = [];
-				$scope.form.msg = '';
-				return false;
-			}else if(/^"?<([a-z]+)([^<]+)*(?:>(.*)<\/\1>|\s+\/>)"?$/.test(message)){
-				message = '';
-			}else if(/^(ht|f)tps?:\/\/\w+([\.\-\w]+)?/.test(message)){
-				message = '<a href="'+message+'" target="_blank">'+message+'</a>';
-			}else if (message== '') {
-				return false;
-			}
+			message = $scope.checkMessage(message);
+			if(!message) return false;
 			$scope.form.msg = '';
 			socket.emit('chat message', message);
 		}
@@ -113,7 +153,7 @@ angular.module('chatApp', ['ngSanitize', 'truncate', 'angularMoment', 'ngAnimate
 		socket.on('chat message', function (data) {
 			$timeout(function () {
 				$scope.messages.push(data);
-				$timeout(function(){$scope.scrollD();},10);
+				$timeout(function(){$scope.scrollD();},500);
 				if($scope.sound) document.getElementById('blop').play();
 			},10);
 		})
@@ -133,4 +173,4 @@ angular.module('chatApp', ['ngSanitize', 'truncate', 'angularMoment', 'ngAnimate
 	})
 	.constant('angularMomentConfig', {
 	    locale : 'es'
-	});
+	})

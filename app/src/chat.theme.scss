@@ -17,6 +17,7 @@ a {
 	color: #9C5300;
 }
 section {
+	display: inline-flex;
 	height: 100%;
 	position: relative;
 	width: 100%;
@@ -25,7 +26,7 @@ form {
 	bottom: 0;
 	padding: 3px;
 	position: absolute;
-	width: calc(100% - 310px);
+	width: calc(100% - 300px);
 
 	> span {
 		display: none;
@@ -86,13 +87,17 @@ form {
 			width: 10%;
 		}
 		.dropzone {
-			width: 80px;
-			height: 80px;
-			border: 1px solid #ccc;
-			text-align: center;
 			// padding: 30px;
-			margin: 10px 15px;
+			border: 1px solid #ccc;
 			font-family: Arial;
+			height: 80px;
+			margin: 10px 15px;
+			overflow: hidden;
+			text-align: center;
+			width: 80px;
+			background-size: cover;
+			background-repeat: no-repeat;
+			background-position: 50%;
 		}
 
 		.image-container {
@@ -117,8 +122,23 @@ div#panel {
 	vertical-align: top;
 	width: calc(300px);
 
-	> .main-avatar{
-		max-width: 60px;
+	.move-up {
+		position: relative;
+		text-align: center;
+		top: -40px;
+		z-index: 99;
+
+		.main-avatar{
+			background-color: rgba(255, 255, 255, 0.9);
+			background-size: cover;
+			background-repeat: no-repeat;
+			background-position: 50%;
+			border-radius: 50%;
+			border: 4px solid #ffb74d;
+			height: 100px;
+			max-width: 100px;
+			width: 100px;
+		}
 	}
 
 	> h2, h3, ul {
@@ -183,16 +203,23 @@ div#panel {
 			background-color: rgba(249, 168, 168, 1);
 			opacity: 0;
 		}
+
+		.md-avatar {
+			background-size: cover;
+			background-repeat: no-repeat;
+			background-position: 50%;
+		}
 	}
 
 	.dropzone {
-			width: 80px;
-			height: 80px;
-			border: 1px solid #ccc;
-			text-align: center;
 			// padding: 30px;
-			margin: 10px 15px;
+			border: 1px solid #ccc;
 			font-family: Arial;
+			height: 80px;
+			margin: 10px 15px;
+			overflow: hidden;
+			text-align: center;
+			width: 80px;
 		}
 
 		.image-container {
@@ -219,7 +246,7 @@ ul#messages {
 	overflow-y: auto;
 	overflow-x: hidden;
 	padding: 0;
-	width: calc(100% - 310px);
+	width: calc(100% - 300px);
 
 	> p {
 		display: none;
@@ -269,6 +296,10 @@ ul#messages {
 			width: 120px;
 		}
 
+		.vid-th {
+			max-width: 200px;
+		}
+
 		// Angular animate
 
 		&.ng-enter {
@@ -279,6 +310,7 @@ ul#messages {
 		&.ng-enter-active {
 			transform: scaleY(1);
 		}
+
 
 	}
 

@@ -61,7 +61,7 @@ gulp.task('serve', function (cb) {
 // Tarea de BrowserSync
 gulp.task('bsync', ['serve'], function () {
 	browserSync.init(null, {
-		proxy: 'http://localhost:1850/chat',
+		proxy: 'http://localhost:5000/chat',
 		port: 1200,
 		files: ["./app/www/**/*.*"],
 		ghostMode: true,

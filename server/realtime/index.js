@@ -19,7 +19,7 @@ module.exports = function (server, mensaje) {
 			socket.username = user.user;
 			socket.userAvatar = user.avatar;
 			socket.room = user.room;
-			usernames[user.user] = user.avatar;
+			usernames[user.user] = {name:user.user, avatar:user.avatar, momentLogin:new Date()};
 			numUsers = Object.keys(usernames).length;
 			// ++numUsers;
 			addedUser = true;
@@ -29,7 +29,7 @@ module.exports = function (server, mensaje) {
 			mensaje.find({})
 				.limit(80)
 				.exec(function (err, mensajes){
-					if (!err) {						
+					if (!err) {
 						socket.emit('login', {
 							numUsers   : numUsers,
 							usersNames : usernames,
@@ -42,12 +42,12 @@ module.exports = function (server, mensaje) {
 				})
 
 			socket.broadcast.to(socket.room).emit('user joined', {
-				user : socket.username,
-				avatar : socket.userAvatar,
-				numUsers : numUsers,
-				user_ip  : client_ip_address,
+				user       : socket.username,
+				avatar     : socket.userAvatar,
+				numUsers   : numUsers,
+				user_ip    : client_ip_address,
 				usersNames : usernames,
-				join : true
+				join       : true
 			});
 		})
 
@@ -60,9 +60,9 @@ module.exports = function (server, mensaje) {
 				room: socket.room,
 				date: new Date()
 			}
-			
+
 			msj = new mensaje(data)
-				
+
 			msj.save(function (err, mensaje){
 				if (!err) {
 					io.in(socket.room).emit('chat message', {

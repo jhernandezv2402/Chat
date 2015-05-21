@@ -6,8 +6,7 @@
         restrict: 'A',
         scope: {
           file: '=',
-          fileName: '=',
-          algo: '&'
+          fileName: '='
         },
         link: function(scope, element, attrs) {
           var checkSize, isTypeValid, processDragOverOrEnter, validMimeTypes;

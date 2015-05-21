@@ -24,18 +24,30 @@
 		<section id="main">
 		<!-- Panel -->
 			<div id="panel" layout="column" ng-show="logged">
-				<img ng-src="{{image}}" class="main-avatar" />
-				<h2>Logged as: <b class="md-title">{{ currentUser }}</b></h2>
-				<h3>Users connected ({{ numUsr }}):</h3>
+				<md-toolbar flex="83">
+
+	    		</md-toolbar>
+	    		<div layout="row" layout-align="center center">
+					<div layout="column" class="move-up md-primary" flex="66" layout-align="center center" title="Conectado, {{ dataCurrentLogin | amCalendar }}">
+
+						<div style="background-image:url({{image}});" class="main-avatar"></div>
+						<!-- <img ng-src="{{image}}" class="main-avatar" /> -->
+						<b class="md-title">{{ currentUser }}</b>
+
+					</div>
+	    		</div>
 				<md-list>
-					<md-list-item class="md-2-line" ng-repeat="(k, v) in users | orderBy : k " >
-					 <img ng-src="{{v}}" class="md-avatar" />
+					<h3>Users connected ({{ numUsr }}):</h3>
+					<md-list-item class="md-2-line" ng-repeat="(k, v) in users | orderBy : k " title="Conectado, {{ v.momentLogin | amCalendar }}">
+					 <div style="background-image:url({{v.avatar}});" class="md-avatar"></div>
+					 <!-- <img ng-src="{{v}}" class="md-avatar" /> -->
 						  <div class="md-list-item-text">
-							{{ k }}
+							{{ v.name }}
 						</div>
 						<md-divider ng-if="!$last"></md-divider>
 					</md-list-item>
 				</md-list>
+				<md-button class="md-fab md-fab-bottom-left" ng-class="{'md-primary':sound, 'md-warn':!sound}" title="Sound" aria-label="Volume" ng-click="sound=!sound"><md-icon ng-class="{'mdi mdi-volume-high':sound, 'mdi mdi-volume-off':!sound}" style="font-size: 1.5em;" ></md-icon></md-button>
 			</div>
 			<!-- End Panel -->
 			<!-- Messages -->
@@ -45,10 +57,9 @@
 				<p>&nbsp;</p>
 				<p>Run 'git help git' to display the help index.</p>
 				<p>Run 'git help '&#60;command&#62;' to display help for especific commands. <span class="users-num">{{ numUsr }}</span></p>
-
 				<li ng-animate="'animate'" class="msg-li" ng-repeat="m in messages track by $index" ng-if="logged" title="{{ m.date | amDateFormat: 'dddd, MMMM Do YYYY, h:mm a' }}">
 					<span ng-if="!m.left && !m.join">
-						<span class="prompt-green" >{{m.user}}</span> <span class="prompt-green" >@TB65</span> <span class="prompt-yellow">/c/xampp/ </span><span class="msg-line" ng-bind-html="m.mensaje | characters:400"></span>
+						<span class="prompt-green" >{{m.user}}</span> <span class="prompt-green" >@TB65</span> <span class="prompt-yellow">/c/xampp/ </span><span class="msg-line" ng-bind-html="m.mensaje | characters:900"></span>
 						<!-- <span class="date" am-time-ago="m.date"></span> -->
 						<span class="date">{{m.date | amCalendar}}</span>
 					</span>
@@ -65,10 +76,11 @@
 					<span class="prompt-green">Global@TB65</span>
 					<span class="prompt-yellow">/c/xampp/</span>
 					<md-content layout="row" layout-wrap>
+
 						<md-input-container flex>
 							<input ng-model="form.msg" aria-label="message" autofocus id="m" autocomplete="off" />
 						</md-input-container>
-						<md-button class="md-fab md-fab-bottom md-primary" aria-label="Add"><md-icon class="mdi mdi-send" style="font-size: 1.5em;"></md-icon></md-button>
+						<md-button class="md-fab md-fab-bottom md-primary" aria-label="Add"><md-icon class="mdi mdi-send" style="font-size: 1.5em;" ></md-icon></md-button>
 					</md-content>
 				</form>
 				<span class="error" ng-if="noLogged">{{ noLogged }}</span>
@@ -86,16 +98,16 @@
 			<!-- Form Login -->
 			<form ng-submit="login(loginForm.user, $parent.image, room)" method="POST" name="loginForm">
 				<md-content layout="row" class="md-hue-1" layout-align="center center" layout-wrap>
-					<div  class="image-container dropzone" file-dropzone="[image/png, image/jpeg, image/gif]" file="$parent.image" file-name="$parent.imageFileName" data-max-file-size="3">
-						<img ng-src={{image}} />
+					<div  class="image-container dropzone" file-dropzone="[image/png, image/jpeg, image/gif]" file="$parent.image" file-name="$parent.imageFileName" data-max-file-size="3" style="background-image:url({{image}})">
+						<!-- <img ng-src={{image}} /> -->
 						<input accept="image/*" type="file" id="upload" name="upload" style="visibility: hidden; width: 1px; height: 1px" />
 					</div>
 					<md-input-container flex="10">
 						<label>Ingresa un Nickname</label>
 						<input md-maxlength="16" ng-maxlength="16" required ng-model="loginForm.user" name="userN" type="text" ng-pattern="/^[a-zA-Z0-9_-]{3,16}$/" />
 						<div ng-show="loginForm.userN.$invalid" ng-messages="loginForm.userN.$invalid">
-							<div ng-show="loginForm.userN.$error.pattern" ng-message="required">Nickname no permitido</div>
-							<div ng-show="loginForm.userN.$error.required" ng-message="required">Nickname requerido</div>
+							<div ng-show="loginForm.userN.$error.pattern" ng-message="required">Nickname no permitido </div>
+							<div ng-show="loginForm.userN.$error.required" ng-message="required"><md-icon class="mdi mdi-alert-circle md-warn" style="font-size: 2em;" ></md-icon> Nickname requerido </md-icon></div>
 						</div>
 					</md-input-container>
 					<md-button type="submit" aria-label="Log" class="md-primary md-raised" ng-disabled="loginForm.$invalid" flex="10">Entrar</md-button>
